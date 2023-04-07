@@ -1,0 +1,65 @@
+{% extends 'core/signup/signup_base.html' %}
+
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block heading %}Choose your user profile{% endblock %}
+
+{% block state %}
+<li class="flex md:w-full items-center text-blue-600 dark:text-blue-500 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700">
+  <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
+      <svg aria-hidden="true" class="w-4 h-4 mr-2 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+      Personal <span class="hidden sm:inline-flex sm:ml-2">Info</span>
+  </span>
+</li>
+<li class="flex md:w-full items-center text-blue-600 dark:text-blue-500 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700">
+  <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
+      <span class="mr-2">2</span>
+      Choose <span class="hidden sm:inline-flex sm:ml-2">Role</span>
+  </span>
+</li>
+<li class="flex items-center">
+  <span class="mr-2">3</span>
+  Finishing
+</li>
+{% endblock %}
+
+{% block content %}
+
+<form id="select-role" method="post" action=".">
+  {% csrf_token %}
+  <div id="role-selection" class="flex flex-col gap-4">
+    <div class="w-full sm:w-64 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:scale-110 transition duration-300 ease-in-out cursor-pointer" id="role-s" onclick="selectRole('S')">
+      <div class="flex flex-col items-center py-10">
+          <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{% static 'profile-img.png' %}" alt="Bonnie image"/>
+          <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Student</h5>
+          <span class="text-sm text-gray-500 dark:text-gray-400">I am a Student</span>
+      </div>
+    </div>
+  
+    <div class="w-full sm:w-64 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:scale-110 transition duration-300 ease-in-out cursor-pointer" id="role-a" onclick="selectRole('A')">
+      <div class="flex flex-col items-center py-10">
+          <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{% static 'profile-img.png' %}" alt="Bonnie image"/>
+          <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Alumnus</h5>
+          <span class="text-sm text-gray-500 dark:text-gray-400">I am an Alumnus</span>
+      </div>
+    </div>
+  
+    <div class="w-full sm:w-64 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:scale-110 transition duration-300 ease-in-out cursor-pointer" id="role-c" onclick="selectRole('C')">
+      <div class="flex flex-col items-center py-10">
+          <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{% static 'profile-img.png' %}" alt="Bonnie image"/>
+          <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Company</h5>
+          <span class="text-sm text-gray-500 dark:text-gray-400">I am a Recruiter</span>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" name="user_role" id="user_role">
+</form>
+<script>
+  function selectRole(role) {
+    document.getElementById('user_role').value = role;
+    document.getElementById('select-role').submit();
+  }
+</script>
+{% endblock %}
