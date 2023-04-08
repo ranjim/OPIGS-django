@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from .forms import SignupForm
 
+# check html render
+def dashboard(request):
+    return render(request, 'core/dashboard/student.html')
+
 def index(request):
     return render(request, 'core/index.html')
 
