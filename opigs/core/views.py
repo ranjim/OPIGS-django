@@ -60,10 +60,6 @@ def create_user(user_data, user_type, form_data):
 
     return new_user
 
-# check html render
-def dashboard(request):
-    return render(request, 'core/dashboard/student.html')
-
 def index(request):
     return render(request, 'core/index.html')
 
