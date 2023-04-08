@@ -66,6 +66,9 @@ def index(request):
 def team(request):
     return render(request, 'core/team.html')
 
+def dashboard(request):
+    return render(request,'core/dashboard/company.html')
+
 def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)
