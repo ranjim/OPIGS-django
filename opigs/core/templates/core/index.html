@@ -5,7 +5,7 @@
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
-    <section id="home" class="bg-white dark:bg-gray-900 pt-16 lg:pt-8 ">
+    <section id="home" class="bg-white dark:bg-gray-900 pt-16 lg:pt-8">
         <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
             <div class="mr-auto place-self-center lg:col-span-7">
                 <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">Connecting talent with opportunity</h1>
@@ -18,7 +18,7 @@
                       Get Started
                     </button>
                 </a>
-                <a href="core:login" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                <a href="core:login" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800 ml-4">
                     Login
                 </a> 
             </div>
@@ -27,7 +27,7 @@
             </div>                
         </div>
     </section>
-    <section id="about" class="bg-white dark:bg-gray-900">
+    <section id="about" class="bg-white dark:bg-gray-900 p-8">
         <div class="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
             <div class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
                 <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">About Us</h2>
@@ -40,4 +40,36 @@
             </div>
         </div>
     </section>
+    
+    <section id="contact" class="bg-white dark:bg-gray-900 px-4 py-12 flex justify-center w-full">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8 w-9/12">
+            <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Contact Us</h2>
+
+            <form id="contact_form" method="post" action=".">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="email-address-icon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                    <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                    </div>
+                    <input name="sender_mail" value="{{ form.sender_mail.value }}" type="text" id="email-address-icon" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com">
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label for="subject-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject</label>
+                    <input name="subject" value="{{ form.subject.value }}" type="text" id="subject-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Subject">
+                </div>
+
+                <div class="mb-4">
+                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Message</label>
+                    <textarea name="mail_content" value="{{ form.mail_content.value }}" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Leave a comment..."></textarea>
+                </div>
+                
+                <button name="contact-btn" type="submit" onclick="ThankYou()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+            </form>   
+          </div>
+    </section>
+
 {% endblock %}

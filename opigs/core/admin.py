@@ -103,3 +103,15 @@ class ChatAdmin(admin.ModelAdmin):
     sender_username.short_description = 'Sender'
     receiver_username.short_description = 'Receiver'
 admin.site.register(Chat, ChatAdmin)
+
+class ContactAdmin(admin.ModelAdmin):
+    model = Contact
+    list_display = ('sender_mail', 'subject')
+    list_filter = ('sender_mail',)
+
+    readonly_fields = ('timestamp',)
+
+    fieldsets = (
+        (None, {'fields': ('sender_mail', 'subject', 'mail_content', 'timestamp')}),
+    )
+admin.site.register(Contact, ContactAdmin)

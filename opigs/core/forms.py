@@ -59,3 +59,8 @@ class CompanyForm(forms.ModelForm):
     class Meta:
         model = Company
         fields = ('company_name', 'desc')
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = ('sender_mail', 'subject', 'mail_content')

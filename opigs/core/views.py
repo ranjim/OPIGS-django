@@ -61,13 +61,19 @@ def create_user(user_data, user_type, form_data):
     return new_user
 
 def index(request):
-    return render(request, 'core/index.html')
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ContactForm()
+    return render(request, 'core/index.html', {'form': form})
 
 def team(request):
     return render(request, 'core/team.html')
 
-def dashboard(request):
-    return render(request,'core/dashboard/company.html')
+def success(request):
+    return render(request, 'core/signup/success.html')
 
 def login_view(request):
     if request.method == "POST":
@@ -101,7 +107,6 @@ def signup1(request):
     if request.method == 'POST':
         userform = UserSignupForm(request.POST)
         if userform.is_valid():
-            print("Hello")
             request.session['user_signup'] = userform.cleaned_data
             return redirect('core:signup2')
     else:
@@ -132,7 +137,7 @@ def signup3(request, user_type):
                 new_alumni = create_user(user_data=user_data, user_type=user_type, form_data=alumni_data)
                 new_alumni.save()
 
-                return redirect('core:index')
+                return redirect('core:success')
         else:
             final_form = AlumniForm()
 
@@ -146,7 +151,7 @@ def signup3(request, user_type):
                 new_company = create_user(user_data=user_data, user_type=user_type, form_data=company_data)
                 new_company.save()
 
-                return redirect('core:index')
+                return redirect('core:success')
         else:
             final_form = CompanyForm()
     
@@ -160,7 +165,7 @@ def signup3(request, user_type):
                 new_student = create_user(user_data=user_data, user_type=user_type, form_data=student_data)
                 new_student.save()
 
-                return redirect('core:index')
+                return redirect('core:success')
         else:
             final_form = StudentForm()
     
