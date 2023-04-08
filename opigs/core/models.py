@@ -17,7 +17,7 @@ class User(AbstractUser):
         return self.username
 
 class Student(User):
-    roll_no = models.CharField(max_length=9, verbose_name='Roll Number')
+    roll_no = models.CharField(max_length=9, verbose_name='Roll Number', unique=True)
     dept = models.CharField(max_length=30, verbose_name='Department')
     CV = models.FileField(upload_to='resume/', verbose_name='Resume')
 
@@ -55,3 +55,14 @@ class Chat(models.Model):
 
     class Meta:
         ordering = ('-timestamp',)
+
+class Contact(models.Model):
+    sender_mail = models.EmailField(verbose_name='sender', default='')
+    subject = models.CharField(max_length=50, null=True, blank=True, default='')
+    mail_content = models.TextField(verbose_name='mail', default='')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-timestamp',)
+        db_table = 'mail'
+        verbose_name_plural = 'mails'
