@@ -27,20 +27,21 @@
 
 {% block content %}
 
-<form method="post" action=".">
+<form method="post" action="." enctype="multipart/form-data">
     {% csrf_token %}
     <div class="mb-4">
         <label for="roll_no" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Roll Number</label>
-        <input type="text" id="roll_no" class="block w-full sm:w-96 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="21DP10000" required>
+        <input type="text" name="roll_no" value="{{ final_form.roll_no.value }}" id="roll_no" class="block w-full sm:w-96 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="21DP10000" required>
     </div>
     <div class="mb-4">
         <label for="dept" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department</label>
-        <input type="text" id="dept" class="block w-full sm:w-96 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CS" required>
+        <input type="text" name="dept" value="{{ final_form.dept.value }}" id="dept" class="block w-full sm:w-96 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CS" required>
     </div>
     <div class="mb-4">
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload CV</label>
-        <input class="block w-full sm:w-96 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+        <input name="CV" value="{{ final_form.CV.value }}" class="block w-full sm:w-96 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
     </div>
+    <button name="signup3_submit" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Proceed</button>
 </form>
 
 {% endblock %}

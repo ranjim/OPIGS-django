@@ -1,38 +1,61 @@
-from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+from taggit.forms import TagField
+from django import forms
+from .models import *
+import datetime
+        
+def validate_dept(value):
+    valid_depts = ['AR', 'AE', 'AF', 'BT', 'CS', 'CE', 'CY', 'CH', 'CI', 'GG', 'HS', 'IM']
+    if value.strip() not in valid_depts:
+        raise ValidationError(_("Enter a valid department code."))
 
-class SignupForm(UserCreationForm):
+def validate_graduating_year(value):
+    current_year = datetime.date.today().year
+    if value > current_year:
+        raise ValidationError(_("Graduating year cannot be in the future."))
+    elif value < 1950:
+        raise ValidationError(_("Graduation year is atleast 1950."))
+
+class UserSignupForm(UserCreationForm):
+    user_contact = forms.IntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)])
+    tags = TagField()
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name',  'email', 'password1', 'password2')
-    
-    username = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Your Username',
-        'class': "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    }))
+        fields = ('username', 'first_name', 'last_name', 'tags', 'email', 'user_contact', 'password1', 'password2')
 
-    email = forms.CharField(widget=forms.EmailInput(attrs={
-        'placeholder': 'email@company.com',
-        'class': "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    }))
+class RoleForm(forms.ModelForm):
+    ROLES = (
+        ('A', 'Alumnus'),
+        ('C', 'Company'),
+        ('S', 'Student'),
+    )
 
-    first_name = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Lorem',
-        'class': "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    }))
+    user_role = forms.ChoiceField(choices=ROLES)
 
-    last_name = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Ipsum',
-        'class': "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    }))
+    class Meta:
+        model = User
+        fields = ('user_role',)
 
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': '••••••••',
-        'class': "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    }))
+class StudentForm(forms.ModelForm):
 
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': '••••••••',
-        'class': "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    }))
+    dept = forms.CharField(validators=[validate_dept])
+    class Meta:
+        model = Student
+        fields = ('roll_no', 'dept', 'CV')
+
+class AlumniForm(forms.ModelForm):
+
+    graduating_year = forms.IntegerField(validators=[validate_graduating_year])
+    dept = forms.CharField(validators=[validate_dept])
+    class Meta:
+        model = Alumni
+        fields = ('graduating_year', 'dept')
+
+class CompanyForm(forms.ModelForm):
+
+    class Meta:
+        model = Company
+        fields = ('company_name', 'desc')
