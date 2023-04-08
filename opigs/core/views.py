@@ -2,8 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+from django.db.models import Q
 from taggit.models import Tag
 from .forms import *
+from .models import Application
+
+
 
 def create_user(user_data, user_type, form_data):
     if user_type == 'S':
@@ -75,6 +79,45 @@ def team(request):
 def success(request):
     return render(request, 'core/signup/success.html')
 
+def dashboard_S(request):
+    user = Student.objects.filter(username=request.user.username)[0]
+    recent_received_chats = Chat.objects.filter(receiver=user).order_by('timestamp')
+    recent_sent_chats = Chat.objects.filter(sender=user).order_by('timestamp')
+    notifications = Notification.objects.all().order_by('posted_on')
+
+    return render(request, 'core/dashboard/dashboard_S.html', {
+        'user': user,
+        'recent_received_chats': recent_received_chats,
+        'recent_sent_chats': recent_sent_chats,
+        'notifications': notifications
+    })
+
+def dashboard_A(request):
+    user = Alumni.objects.filter(username=request.user.username)[0]
+    recent_received_chats = Chat.objects.filter(receiver=user).order_by('timestamp')
+    recent_sent_chats = Chat.objects.filter(sender=user).order_by('timestamp')
+    notifications = Notification.objects.all().order_by('posted_on')
+
+    return render(request, 'core/dashboard/dashboard_A.html', {
+        'user': user,
+        'recent_received_chats': recent_received_chats,
+        'recent_sent_chats': recent_sent_chats,
+        'notifications': notifications
+    })
+
+def dashboard_C(request):
+    user = Company.objects.filter(username=request.user.username)[0]
+    applications = Application.objects.filter(Q(recruiter=request.user) & Q(is_shortlisted=False))
+    shortlists = Application.objects.filter(Q(recruiter=request.user) & Q(is_shortlisted=True))
+    notifications = Notification.objects.all()
+
+    return render(request, 'core/dashboard/dashboard_C.html', {
+        'user': user,
+        'applications': applications,
+        'shortlists': shortlists,
+        'notifications': notifications
+    })
+
 def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)
@@ -85,11 +128,11 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 if user.user_role == 'S':
-                    return redirect('dashboard_S')
+                    return redirect('core:dashboard_S')
                 elif user.user_role == 'A':
-                    return redirect('dashboard_A')
+                    return redirect('core:dashboard_A')
                 elif user.user_role == 'C':
-                    return redirect('dashboard_C')
+                    return redirect('core:dashboard_C')
                 elif user.user_role == 'F':
                     admin_url = reverse('admin:index')
                     return redirect(admin_url)

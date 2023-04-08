@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import *
 
+from django.contrib.auth.views import LogoutView    
+from django.urls import reverse_lazy
+admin.site.logout = LogoutView.as_view(next_page=reverse_lazy('core:index'))
+
 class CustomUserAdmin(UserAdmin):
     model = User
     list_display = ('username', 'email', 'user_contact', 'user_role')
@@ -74,18 +78,18 @@ admin.site.register(Company, CompanyAdmin)
 
 class NotificationAdmin(admin.ModelAdmin):
     model = Notification
-    list_display = ('posted_on',)
+    list_display = ('posted_on', 'title')
 
     readonly_fields = ('posted_on',)
 
     fieldsets = (
-        ('Notification', {'fields': ('posted_on', 'message')}),
+        ('Notification', {'fields': ('posted_on', 'title', 'message')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('message',)
+            'fields': ('title', 'message')
         })
     )
 admin.site.register(Notification, NotificationAdmin)
@@ -115,3 +119,19 @@ class ContactAdmin(admin.ModelAdmin):
         (None, {'fields': ('sender_mail', 'subject', 'mail_content', 'timestamp')}),
     )
 admin.site.register(Contact, ContactAdmin)
+
+class ApplicationAdmin(admin.ModelAdmin):
+    model = Application
+    list_display = ('recruiter', 'applicant')
+    list_filter = ('recruiter', 'applicant', 'is_shortlisted')
+
+    fieldsets = (
+        (None, {'fields': ('recruiter', 'applicant', 'is_shortlisted')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('recruiter', 'applicant', 'is_shortlisted')
+        })
+    )
+admin.site.register(Application, ApplicationAdmin)

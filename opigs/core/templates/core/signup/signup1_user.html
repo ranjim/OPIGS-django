@@ -70,6 +70,15 @@
   <p class="text-sm font-light text-gray-500 dark:text-gray-400 mt-2">
     Already have an account? <a href="{% url 'core:login' %}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
   </p>
+
+  {% if form.errors or form.non_field_errors %}
+    <div class="mb-3 p-6 bg-red-100 rounded-xl">
+      {% for field in form %}
+        {{ field.errors }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
 </form>
 
 

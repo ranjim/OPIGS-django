@@ -41,6 +41,7 @@ class Company(User):
         verbose_name_plural = 'companies'
 
 class Notification(models.Model):
+    title = models.CharField(max_length=30, default = '')
     message = models.CharField(max_length=255)
     posted_on = models.DateTimeField(auto_now_add=True)
 
@@ -66,3 +67,8 @@ class Contact(models.Model):
         ordering = ('-timestamp',)
         db_table = 'mail'
         verbose_name_plural = 'mails'
+
+class Application(models.Model):
+    recruiter = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='recruiter')
+    applicant = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='applicant')
+    is_shortlisted = models.BooleanField()
