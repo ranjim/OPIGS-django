@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <script src="https://cdn.tailwindcss.com"></script>
+    
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css"
+          rel="stylesheet"
+        />
+    
+        <title>Chat | OPIGS</title>
+      </head>
+  <body class="bg-white dark:bg-gray-900">
+    <div style="overscroll-behavior: none;">
+      <div
+        class="fixed w-full h-16 pt-2 text-white flex gap-8 shadow-md bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600"
+        style="top:0px; overscroll-behavior: none;"
+      >
+        <!-- back button -->
+        <a href="{% if sender.user_role == 'A' %}{% url 'core:dashboard_A' %}{% else %}{% url 'core:dashboard_S' %}{% endif %}">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="w-12 h-12 my-1 text-blue-100 ml-2"
+          >
+            <path
+              class="text-blue-100 fill-current"
+              d="M9.41 11H17a1 1 0 0 1 0 2H9.41l2.3 2.3a1 1 0 1 1-1.42 1.4l-4-4a1 1 0 0 1 0-1.4l4-4a1 1 0 0 1 1.42 1.4L9.4 11z"
+            />
+          </svg>
+        </a>
+        <div class="my-3 text-blue-100 font-bold text-lg tracking-wide">@{{ receiver.username }}</div>
+      </div>
+
+      <div class="mt-20 mb-16">
+        {% for chat in chat_history %}
+        <div class="clearfix">
+        {% if chat.sender.username == receiver.username %}
+            <div class="w-full">
+                <div
+                    class="block p-2.5 m-2 w-9/12 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                ><strong>{{ chat.sender.username }}</strong>: {{ chat.message }}</div>
+            </div>
+        {% else %}
+            <div class="w-full flex justify-end">
+                <div
+                    class="inline-flex m-2 w-9/12 items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg"
+                >   
+                <div>You: {{ chat.message }}</div>
+            </div>
+        {% endif %}
+    </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <form method="post" action="{% url 'core:send_chat' receiver.username %}" class="fixed w-full flex justify-between bg-blue-100" style="bottom: 0px;">
+        {% csrf_token %}
+      <div class="flex items-center px-3 py-2 bg-gray-50 dark:bg-gray-700 w-full">
+          <input
+            class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            name="message"
+            rows="1"
+            placeholder="Message..."
+            style="outline: none;"
+            required
+          >
+          <button class="m-2" style="outline: none;">
+            <svg
+              class="svg-inline--fa text-blue-400 fa-paper-plane fa-w-16 w-12 h-12 py-2 mr-2"
+              aria-hidden="true"
+              focusable="false"
+              data-prefix="fas"
+              data-icon="paper-plane"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              <path
+                fill="currentColor"
+                d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"
+              />
+            </svg>
+          </button>
+      </div>
+    </form>
+  </body>
+</html>

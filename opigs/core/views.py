@@ -1,68 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
-from taggit.models import Tag
 from .forms import *
 from .models import Application
-
-
-
-def create_user(user_data, user_type, form_data):
-    if user_type == 'S':
-        new_user = Student.objects.create_user(
-            username=user_data['username'],
-            email=user_data['email'],
-            first_name=user_data['first_name'],
-            last_name=user_data['last_name'],
-            password=user_data['password1'],
-            user_role=user_type,
-            user_contact=user_data['user_contact'],
-            roll_no=form_data['roll_no'],
-            dept=form_data['dept'],
-            CV=form_data['CV']
-        )
-    elif user_type == 'A':
-        new_user = Alumni.objects.create_user(
-            username=user_data['username'],
-            email=user_data['email'],
-            first_name=user_data['first_name'],
-            last_name=user_data['last_name'],
-            password=user_data['password1'],
-            user_role=user_type,
-            user_contact=user_data['user_contact'],
-            graduating_year=form_data['graduating_year'],
-            dept=form_data['dept']
-        )
-    elif user_type == 'C':
-        new_user = Company.objects.create_user(
-            username=user_data['username'],
-            email=user_data['email'],
-            first_name=user_data['first_name'],
-            last_name=user_data['last_name'],
-            password=user_data['password1'],
-            user_role=user_type,
-            user_contact=user_data['user_contact'],
-            company_name=form_data['company_name'],
-            desc=form_data['desc']
-        )
-    else:
-        new_user = User.objects.create_user(
-            username=user_data['username'],
-            email=user_data['email'],
-            first_name=user_data['first_name'],
-            last_name=user_data['last_name'],
-            password=user_data['password1'],
-            user_role=user_type,
-            user_contact=user_data['user_contact'],
-        )
-    tag_names = user_data['tags']
-    for tag_name in tag_names:
-        tag, created = Tag.objects.get_or_create(name=tag_name)
-        new_user.tags.add(tag)
-
-    return new_user
+from .utils import create_user
+from django.shortcuts import get_object_or_404
 
 def index(request):
     if request.method == "POST":
@@ -79,32 +24,53 @@ def team(request):
 def success(request):
     return render(request, 'core/signup/success.html')
 
+@login_required
 def dashboard_S(request):
     user = Student.objects.filter(username=request.user.username)[0]
-    recent_received_chats = Chat.objects.filter(receiver=user).order_by('timestamp')
-    recent_sent_chats = Chat.objects.filter(sender=user).order_by('timestamp')
+
+    all_chats = Chat.objects.filter(Q(sender=request.user) | Q(receiver=request.user))
+    recent_chats = []
+    others = []
+    for chat in all_chats:
+        if chat.sender == request.user and chat.receiver not in others:
+            recent_chats.append(chat)
+            others.append(chat.receiver)
+        elif chat.receiver == request.user and chat.sender not in others:
+            recent_chats.append(chat)
+            others.append(chat.sender)
+
     notifications = Notification.objects.all().order_by('posted_on')
 
     return render(request, 'core/dashboard/dashboard_S.html', {
         'user': user,
-        'recent_received_chats': recent_received_chats,
-        'recent_sent_chats': recent_sent_chats,
+        'recent_chats': recent_chats,
         'notifications': notifications
     })
 
+@login_required
 def dashboard_A(request):
     user = Alumni.objects.filter(username=request.user.username)[0]
-    recent_received_chats = Chat.objects.filter(receiver=user).order_by('timestamp')
-    recent_sent_chats = Chat.objects.filter(sender=user).order_by('timestamp')
+
+    all_chats = Chat.objects.filter(Q(sender=request.user) | Q(receiver=request.user))
+    recent_chats = []
+    others = []
+    for chat in all_chats:
+        if chat.sender == request.user and chat.receiver not in others:
+            recent_chats.append(chat)
+            others.append(chat.receiver)
+        elif chat.receiver == request.user and chat.sender not in others:
+            recent_chats.append(chat)
+            others.append(chat.sender)
+
     notifications = Notification.objects.all().order_by('posted_on')
 
     return render(request, 'core/dashboard/dashboard_A.html', {
         'user': user,
-        'recent_received_chats': recent_received_chats,
-        'recent_sent_chats': recent_sent_chats,
+        'recent_chats': recent_chats,
         'notifications': notifications
     })
 
+@login_required
 def dashboard_C(request):
     user = Company.objects.filter(username=request.user.username)[0]
     applications = Application.objects.filter(Q(recruiter=request.user) & Q(is_shortlisted=False))
@@ -218,3 +184,18 @@ def signup3(request, user_type):
         return redirect('core:index')
     
     return render(request, template_name, {'form': final_form})
+
+def chat_view(request, username):
+    sender = request.user
+    receiver = User.objects.filter(username=username)[0]
+    chat_history = Chat.objects.filter(Q(sender=sender) & Q(receiver=receiver) | Q(sender=receiver) & Q(receiver=sender))
+    return render(request, 'core/chat.html', {'sender': sender, 'receiver': receiver, 'chat_history': chat_history})
+
+def send_chat(request, username):
+    if request.method == "POST":
+        sender = request.user
+        message = request.POST.get('message')
+        receiver = User.objects.filter(username=username)[0]
+        
+        Chat.objects.create(sender=sender, receiver=receiver, message=message)
+        return redirect('core:chat', username=username)

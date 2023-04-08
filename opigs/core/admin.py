@@ -97,6 +97,7 @@ admin.site.register(Notification, NotificationAdmin)
 class ChatAdmin(admin.ModelAdmin):
     model = Chat
     list_display = ('sender_username', 'receiver_username', 'timestamp')
+    list_filter = ('sender', 'receiver')
 
     def sender_username(self, obj):
         return obj.sender.username
