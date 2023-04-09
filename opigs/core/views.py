@@ -73,6 +73,7 @@ def dashboard_A(request):
 @login_required
 def dashboard_C(request):
     user = Company.objects.filter(username=request.user.username)[0]
+    print(user)
     applications = Application.objects.filter(Q(recruiter=request.user) & Q(is_shortlisted=False))
     shortlists = Application.objects.filter(Q(recruiter=request.user) & Q(is_shortlisted=True))
     notifications = Notification.objects.all()

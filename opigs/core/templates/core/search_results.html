@@ -21,7 +21,7 @@
           style="top:0px; overscroll-behavior: none;"
         >
           <!-- back button -->
-          <a href="{% if sender.user_role == 'A' %}{% url 'core:dashboard_A' %}{% elif sender.user_role == 'S' %}{% url 'core:dashboard_S' %}{% else %}{% url 'core:dashboard_C' %}{% endif %}">
+          <a href="{% if request.user.user_role == 'A' %}{% url 'core:dashboard_A' %}{% elif request.user.user_role == 'S' %}{% url 'core:dashboard_S' %}{% else %}{% url 'core:dashboard_C' %}{% endif %}">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
