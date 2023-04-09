@@ -202,8 +202,9 @@ def send_chat(request, username):
 
 def search_results(request):
 
+    student = Student.objects.filter(username=request.user.username)[0]
+
     query = request.GET.get('query')
-    print(query)
     try:
         users = User.objects.filter(tags__name__in=query.split())
     except Tag.DoesNotExist:
@@ -212,9 +213,15 @@ def search_results(request):
     companies = []
     alumnis = []
     students = []
+    application = Application.objects.filter(applicant=student)
+    if len(application) == 0:
+        applied = False
+    else:
+        applied = True
+    
     for user in users:
         if user.user_role == 'C':
-            companies.append(user)
+            companies.append(Company.objects.filter(username=user.username)[0])
         elif user.user_role == 'A':
             alumnis.append(user)
         elif user.user_role == 'S':
@@ -223,7 +230,8 @@ def search_results(request):
     return render(request, 'core/search_results.html', {
         'companies': companies,
         'alumnis': alumnis,
-        'students': students
+        'students': students,
+        'applied': applied
     })
 
 @login_required
@@ -239,10 +247,54 @@ def edit_profile(request):
 
     if request.method == 'POST':
         form = EditUserForm(request.POST, instance=user_profile)
-        print(form)
         if form.is_valid():
             form.save()
             return redirect(page)
     else:
         form = EditUserForm(instance=user_profile)
     return render(request, 'core/dashboard/edit_profile.html', {'editform': form})
+
+def create_application(request, username):
+    if request.method == 'POST':
+        # Get data from 
+        recruiter = Company.objects.filter(username=username)[0]
+        applicant = Student.objects.filter(username=request.user)[0]
+        
+        # Create application instance
+        Application.objects.create(
+            recruiter=recruiter,
+            applicant=applicant,
+            is_shortlisted=False
+        )
+        
+        # Redirect to a success page
+        return redirect('core:dashboard_S')
+
+def remove_application(request, username):
+    if request.method == 'POST':
+        # Get data from 
+        recruiter = Company.objects.filter(username=request.user.username)[0]
+        applicant = Student.objects.filter(username=username)[0]
+        
+        # Create application instance
+        application = Application.objects.filter(applicant=applicant)
+        application.delete()
+        
+        # Redirect to a success page
+        return redirect('core:dashboard_C')
+
+def shortlist_application(request, username):
+    if request.method == 'POST':
+        # Get data from 
+        recruiter = Company.objects.filter(username=request.user.username)[0]
+        applicant = Student.objects.filter(username=username)[0]
+        
+        # Create application instance
+        application = Application.objects.get(applicant=applicant)
+
+        # update the values of the application object
+        application.is_shortlisted = True
+        application.save()
+        
+        # Redirect to a success page
+        return redirect('core:dashboard_C')

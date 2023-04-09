@@ -61,14 +61,30 @@
                             {{ company.email }}
                         </p>
                     </div>
+                    {% if request.user.user_role == 'S' %}
                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                        <button
-                        type="button"
-                        class="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        >
-                        Apply
-                        </button>
+                        {% if applied %}
+                        <div
+                            name="create-application-button"
+                            type="button"
+                            class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:focus:ring-gray-800"
+                            >
+                            Applied
+                        </div>
+                        {% else %}
+                        <form action="{% url 'core:create_application' username=company.username %}" method="post">
+                            {% csrf_token %}
+                            <button
+                            name="create-application-button"
+                            type="submit"
+                            class="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            >
+                            Apply
+                            </button>
+                        </form>
+                        {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             </li>
             {% endif %}
@@ -190,6 +206,11 @@
      </ul>
  </div>
  </div>
+<script>
+    document.querySelector('#create-application-button').addEventListener('click', function() {
+        document.querySelector('form').submit();
+    });
+</script>
 
   </body>
 </html>

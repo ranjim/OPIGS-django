@@ -41,6 +41,27 @@
                 {{ applicant.applicant.email }}
             </p>
             </div>
+            <form id="shortlist" action="{% url 'core:shortlist_application' username=applicant.applicant.username %}" method="post" class="p-0 m-0">
+                {% csrf_token %}
+                <button
+                name="shortlist-application-button"
+                id="shortlist_application-button"
+                type="submit"
+                class="inline-flex items-center justify-center px-5 py-2 text-sm font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                >
+                Shortlist
+                </button>
+            </form>
+            <form action="{% url 'core:remove_application' username=applicant.applicant.username %}" method="post" class="p-0 m-0">
+                {% csrf_token %}
+                <button
+                name="remove-application-button"
+                type="submit"
+                class="inline-flex items-center justify-center px-5 py-2 text-sm font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                >
+                Remove
+                </button>
+            </form>
         </div>
         </li>
         {% empty %}
@@ -57,7 +78,7 @@
               <img
                 class="w-8 h-8 rounded-full"
                 src="{% static 'profile-img.png' %}"
-                alt="Neil image"
+                alt="Profile image"
               />
             </div>
             <div class="flex-1 min-w-0">
@@ -68,12 +89,30 @@
                 {{ shortlist.applicant.email }}
               </p>
             </div>
+            <form action="{% url 'core:remove_application' username=shortlist.applicant.username %}" method="post" class="p-0 m-0">
+                {% csrf_token %}
+                <button
+                name="remove-application-button"
+                type="submit"
+                class="inline-flex items-center justify-center px-5 py-2 text-sm font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                >
+                Remove
+                </button>
+            </form>
           </div>
         </li>
         {% empty %}
         <p class="text-sm text-gray-500 dark:text-gray-400">No <strong class="font-medium text-gray-800 dark:text-white">shortlist</strong> found.</p>
         {% endfor %}
     </div>
+    <script>
+        document.querySelector('#remove-application-button').addEventListener('click', function() {
+            document.querySelector('form').submit();
+        });
+        document.querySelector('#shortlist-application-button').addEventListener('click', function() {
+            document.querySelector('#shortlist').submit();
+        });
+    </script>
 </div>
 
 {% endblock %} 
