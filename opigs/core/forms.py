@@ -65,7 +65,7 @@ class ContactForm(forms.ModelForm):
         model = Contact
         fields = ('sender_mail', 'subject', 'mail_content')
 
-class UserProfileForm(forms.ModelForm):
+class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['user_role', 'user_contact', 'tags']

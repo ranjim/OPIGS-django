@@ -7,7 +7,7 @@ from django.db.models import Q
 from .forms import *
 from .models import Application
 from .utils import create_user
-from django.shortcuts import get_object_or_404
+from taggit.models import Tag
 
 def index(request):
     if request.method == "POST":
@@ -202,19 +202,23 @@ def send_chat(request, username):
 
 def search_results(request):
 
-    query = request.GET.get('q')
-    if query:
-        results = User.objects.filter(
-            Q(tags__name__icontains=query)
-        )
-    else:
-        results = User.objects.none()
-    
-    print(results)
+    query = request.GET.get('query')
+    print(query)
+    try:
+        users = User.objects.filter(tags__name__in=query.split())
+    except Tag.DoesNotExist:
+        users = []
 
-    companies = Company.objects.filter(user_role='C')
-    alumnis = User.objects.filter(user_role='A')
-    students = User.objects.filter(user_role='S')
+    companies = []
+    alumnis = []
+    students = []
+    for user in users:
+        if user.user_role == 'C':
+            companies.append(user)
+        elif user.user_role == 'A':
+            alumnis.append(user)
+        elif user.user_role == 'S':
+            students.append(user)
 
     return render(request, 'core/search_results.html', {
         'companies': companies,
@@ -226,7 +230,7 @@ def search_results(request):
 def edit_profile(request):
     user_profile = request.user
 
-    if user_profile.user_role == 'C':
+    if user_profile.user_role == 'S':
         page = 'core:dashboard_S'
     elif user_profile.user_role == 'A':
         page = 'core:dashboard_A'
@@ -234,10 +238,11 @@ def edit_profile(request):
         page = 'core:dashboard_C'
 
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=user_profile)
+        form = EditUserForm(request.POST, instance=user_profile)
+        print(form)
         if form.is_valid():
             form.save()
             return redirect(page)
     else:
-        form = UserProfileForm(instance=user_profile)
+        form = EditUserForm(instance=user_profile)
     return render(request, 'core/dashboard/edit_profile.html', {'editform': form})

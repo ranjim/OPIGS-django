@@ -72,6 +72,10 @@
                 </div>
             </li>
             {% endif %}
+            {% empty %}
+            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                No <strong>companies</strong> found.
+            </p>
             {% endfor %}
         </ul>
    </div>
@@ -113,6 +117,10 @@
             </div>
         </li>
         {% endif %}
+        {% empty %}
+            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                No <strong>alumnis</strong> found.
+            </p>
         {% endfor %}
     </ul>
 </div>
@@ -154,7 +162,30 @@
                  </div>
              </div>
          </li>
+         {% else %}
+         <li class="py-3 sm:py-4">
+            <div class="flex items-center space-x-4">
+               <div class="flex-shrink-0">
+                   <img class="w-8 h-8 rounded-full" src="{% static 'profile-img.png' %}" alt="Profile image">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                       YOU
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                       @{{ student.username }}
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                       {{ student.email }}
+                    </p>
+                </div>
+            </div>
+        </li>
          {% endif %}
+         {% empty %}
+            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                No <strong>students</strong> found.
+            </p>
          {% endfor %}
      </ul>
  </div>
