@@ -202,7 +202,7 @@ def send_chat(request, username):
 
 def search_results(request):
 
-    student = Student.objects.filter(username=request.user.username)[0]
+    student = Student.objects.filter(username=request.user.username).first()
 
     query = request.GET.get('query')
     try:
