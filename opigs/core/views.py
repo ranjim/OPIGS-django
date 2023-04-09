@@ -199,3 +199,45 @@ def send_chat(request, username):
         
         Chat.objects.create(sender=sender, receiver=receiver, message=message)
         return redirect('core:chat', username=username)
+
+def search_results(request):
+
+    query = request.GET.get('q')
+    if query:
+        results = User.objects.filter(
+            Q(tags__name__icontains=query)
+        )
+    else:
+        results = User.objects.none()
+    
+    print(results)
+
+    companies = Company.objects.filter(user_role='C')
+    alumnis = User.objects.filter(user_role='A')
+    students = User.objects.filter(user_role='S')
+
+    return render(request, 'core/search_results.html', {
+        'companies': companies,
+        'alumnis': alumnis,
+        'students': students
+    })
+
+@login_required
+def edit_profile(request):
+    user_profile = request.user
+
+    if user_profile.user_role == 'C':
+        page = 'core:dashboard_S'
+    elif user_profile.user_role == 'A':
+        page = 'core:dashboard_A'
+    else:
+        page = 'core:dashboard_C'
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect(page)
+    else:
+        form = UserProfileForm(instance=user_profile)
+    return render(request, 'core/dashboard/edit_profile.html', {'editform': form})

@@ -30,7 +30,7 @@
             <img
                 class="w-8 h-8 rounded-full"
                 src="{% static 'profile-img.png' %}"
-                alt="Neil image"
+                alt="Profile image"
             />
             </div>
             <div class="flex-1 min-w-0">
@@ -101,11 +101,13 @@
         </div>
       </div>  
       <div class="flex justify-center gap-4 mt-8 md:mt-0 md:flex-end">
-        <button
-          class="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-        >
-            Edit
-        </button>
+        <a href="{% url 'core:edit_profile' %}">
+            <button
+              class="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+            >
+                Edit
+            </button>
+        </a>
             </div>  
     </div>
 

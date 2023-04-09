@@ -1,0 +1,164 @@
+{% load static %}
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <script src="https://cdn.tailwindcss.com"></script>
+    
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css"
+          rel="stylesheet"
+        />
+    
+        <title>Search Results | OPIGS</title>
+      </head>
+  <body class="bg-white dark:bg-gray-900 px-4 pb-4">
+    <div style="overscroll-behavior: none;">
+        <div
+          class="fixed w-full h-16 pt-2 text-white flex gap-8 shadow-md bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600"
+          style="top:0px; overscroll-behavior: none;"
+        >
+          <!-- back button -->
+          <a href="{% if sender.user_role == 'A' %}{% url 'core:dashboard_A' %}{% else %}{% url 'core:dashboard_S' %}{% endif %}">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="w-12 h-12 my-1 text-blue-100 ml-2"
+            >
+              <path
+                class="text-blue-100 fill-current"
+                d="M9.41 11H17a1 1 0 0 1 0 2H9.41l2.3 2.3a1 1 0 1 1-1.42 1.4l-4-4a1 1 0 0 1 0-1.4l4-4a1 1 0 0 1 1.42 1.4L9.4 11z"
+              />
+            </svg>
+          </a>
+          <div class="my-3 text-blue-100 font-bold text-lg tracking-wide">Search Results</div>
+        </div>
+
+        
+<div class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 mt-20 mx-auto">
+    <div class="flex items-center justify-between mb-4">
+        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Companies</h5>
+    </div>
+   <div class="flow-root">
+        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+            {% for company in companies %}
+            {% if request.user.username != company.username %}
+            <li class="py-3 sm:py-4">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <img class="w-8 h-8 rounded-full" src="{% static 'profile-img.png' %}" alt="Profile image">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                            {{ company.company_name }}
+                        </p>
+                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                            @{{ company.username }}
+                        </p>
+                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                            {{ company.email }}
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                        <button
+                        type="button"
+                        class="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        >
+                        Apply
+                        </button>
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+   </div>
+</div>
+<div class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 mt-8 mx-auto">
+   <div class="flex items-center justify-between mb-4">
+    <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Alumnis</h5>
+</div>
+<div class="flow-root">
+    <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for alumnus in alumnis %}
+        {% if request.user.username != alumnus.username %}
+        <li class="py-3 sm:py-4">
+            <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                    <img class="w-8 h-8 rounded-full" src="{% static 'profile-img.png' %}" alt="Profile image">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                        {{ alumnus.first_name }} {{ alumnus.last_name }}
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                        @{{ alumnus.username }}
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                        {{ alumnus.email }}
+                    </p>
+                </div>
+                <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                    <a href="{% url 'core:chat' alumnus.username %}">
+                        <button
+                        type="button"
+                        class="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        >
+                        Chat
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+</div>
+
+<div class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 mt-8 mx-auto">
+    <div class="flex items-center justify-between mb-4">
+     <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Students</h5>
+ </div>
+ <div class="flow-root">
+     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+         {% for student in students %}
+         {% if request.user.username != student.username %}
+         <li class="py-3 sm:py-4">
+             <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                    <img class="w-8 h-8 rounded-full" src="{% static 'profile-img.png' %}" alt="Profile image">
+                 </div>
+                 <div class="flex-1 min-w-0">
+                     <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                        {{ student.first_name }} {{ student.last_name }}
+                     </p>
+                     <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                        @{{ student.username }}
+                     </p>
+                     <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                        {{ student.email }}
+                     </p>
+                 </div>
+                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                    <a href="{% url 'core:chat' student.username %}">
+                        <button
+                        type="button"
+                        class="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        >
+                        Chat
+                        </button>
+                    </a>
+                 </div>
+             </div>
+         </li>
+         {% endif %}
+         {% endfor %}
+     </ul>
+ </div>
+ </div>
+
+  </body>
+</html>

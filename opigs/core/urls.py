@@ -19,4 +19,6 @@ urlpatterns = [
     path('dashboard_C', dashboard_C, name='dashboard_C'),
     path('chat/<str:username>/', chat_view, name='chat'),
     path('send_chat/<str:username>', send_chat, name='send_chat'),
+    path('search_results/', search_results, name='search_results'),
+    path('edit/', edit_profile, name='edit_profile'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
