@@ -1,9 +1,0 @@
-asgiref
-backports.zoneinfo
-Django
-django-browser-reload
-django-taggit
-pip
-setuptools
-sqlparse
-tzdata
