@@ -19,6 +19,10 @@ def validate_graduating_year(value):
     elif value < 1950:
         raise ValidationError(_("Graduation year is atleast 1950."))
 
+def validate_tags(value):
+    if len(value.strip()) == 0:
+        raise ValidationError(_("Enter atleast 1 tag to be discoverable in searches."))
+
 class UserSignupForm(UserCreationForm):
     user_contact = forms.IntegerField(validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)])
     tags = TagField()
